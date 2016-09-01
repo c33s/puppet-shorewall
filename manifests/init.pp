@@ -13,6 +13,7 @@ class shorewall (
     $log_martians        = true,
     $route_filter        = true,
     $default_zone_entry  = "local firewall\n",
+    $header_template     = "shorewall/header.erb",
     $blacklist           = ["NEW","INVALID","UNTRACKED"]
 ) {
 
@@ -61,6 +62,7 @@ class shorewall (
                 '/etc/shorewall/hosts',
                 '/etc/shorewall/tcrules',
                 '/etc/shorewall/routestopped',
+                '/etc/shorewall/params',
             ]:
             mode   => '0644',
             notify => Service['shorewall'],
@@ -70,7 +72,7 @@ class shorewall (
         concat::fragment { 'zones-preamble':
             order   => '00',
             target  => '/etc/shorewall/zones',
-            content => "# This file is managed by puppet\n# Edits will be lost\n",
+            content => template($header_template),
         }
 
         concat::fragment { 'shorewall-zones-local':
@@ -83,21 +85,21 @@ class shorewall (
         concat::fragment { 'interfaces-preamble':
             order   => '00',
             target  => '/etc/shorewall/interfaces',
-            content => "# This file is managed by puppet\n# Changes will be lost\n",
+            content => template($header_template),
         }
 
         # ipv4 policy
         concat::fragment { 'policy-preamble':
             order   => 'a-00',
             target  => '/etc/shorewall/policy',
-            content => "# This file is managed by puppet\n# Changes will be lost\n",
+            content => template($header_template),
         }
 
         # ipv4 rules
         concat::fragment { 'rules-preamble':
             order   => '00',
             target  => '/etc/shorewall/rules',
-            content => "# This file is managed by puppet\n# Changes will be lost\n",
+            content => template($header_template),
         }
 
         # ipv4 rules SECTION NEW
@@ -118,7 +120,7 @@ class shorewall (
         concat::fragment { 'hosts-preamble':
             order   => '01',
             target  => '/etc/shorewall/hosts',
-            content => "# This file is managed by puppet\n# Changes will be lost\n",
+            content => template($header_template),
         }
 
         # ipv4 tunnels (composed)
@@ -131,7 +133,7 @@ class shorewall (
             concat::fragment { 'tunnels-preamble':
                 order   => '00',
                 target  => '/etc/shorewall/tunnels',
-                content => "# This file is managed by puppet\n# Changes will be lost\n",
+                content => template($header_template),
             }
         } else {
             file { '/etc/shorewall/tunnels':
@@ -144,28 +146,35 @@ class shorewall (
         concat::fragment { 'masq-preamble':
             order   => '00',
             target  => '/etc/shorewall/masq',
-            content => "# This file is managed by puppet\n# Changes will be lost\n",
+            content => template($header_template),
         }
 
         # ipv4 proxyarp
         concat::fragment { 'proxyarp-preamble':
             order   => '00',
             target  => '/etc/shorewall/proxyarp',
-            content => "# This file is managed by puppet\n# Changes will be lost\n",
+            content => template($header_template),
         }
 
         # ipv4 tc rules
         concat::fragment { 'tcrules-preamble':
             order   => '00',
             target  => '/etc/shorewall/tcrules',
-            content => "# This file is managed by puppet\n# Changes will be lost\n",
+            content => template($header_template),
         }
 
         # ipv4 routestopped
         concat::fragment { 'routestopped-preamble':
             order   => '00',
             target  => '/etc/shorewall/routestopped',
-            content => "# This file is managed by puppet\n# Changes will be lost\n",
+            content => template($header_template),
+        }
+
+        # ipv4 params
+        concat::fragment { 'params-preamble':
+            order   => '00',
+            target  => '/etc/shorewall/params',
+            content => template($header_template),
         }
 
         if $traffic_control {
@@ -181,14 +190,14 @@ class shorewall (
             concat::fragment { 'tcinterfaces-preamble':
                 order   => '00',
                 target  => '/etc/shorewall/tcinterfaces',
-                content => "# This file is managed by puppet\n# Changes will be lost\n",
+                content => template($header_template),
             }
 
             # ipv4 tc priorities
             concat::fragment { 'tcpri-preamble':
                 order   => '00',
                 target  => '/etc/shorewall/tcpri',
-                content => "# This file is managed by puppet\n# Changes will be lost\n",
+                content => template($header_template),
             }
         } else {
             file { [
@@ -243,7 +252,7 @@ class shorewall (
         concat::fragment { 'zones6-preamble':
             order   => '00',
             target  => '/etc/shorewall6/zones',
-            content => "# This file is managed by puppet\n# Changes will be lost\n",
+            content => template($header_template),
         }
 
         concat::fragment { 'shorewall6-zones-local':
@@ -256,21 +265,21 @@ class shorewall (
         concat::fragment { 'interfaces6-preamble':
             order   => '00',
             target  => '/etc/shorewall6/interfaces',
-            content => "# This file is managed by puppet\n# Changes will be lost\n",
+            content => template($header_template),
         }
 
         # ipv6 policy (default DROP)
         concat::fragment { 'policy6-preamble':
             order   => 'a-00',
             target  => '/etc/shorewall6/policy',
-            content => "# This file is managed by puppet\n# Changes will be lost\n",
+            content => template($header_template),
         }
 
         # ipv6 rules
         concat::fragment { 'rules6-preamble':
             order   => '00',
             target  => '/etc/shorewall6/rules',
-            content => "# This file is managed by puppet\n# Changes will be lost\n",
+            content => template($header_template),
         }
 
         # ipv6 rules SECTION NEW
@@ -297,7 +306,7 @@ class shorewall (
             concat::fragment { 'tunnels6-preamble':
                 order   => '00',
                 target  => '/etc/shorewall6/tunnels',
-                content => "# This file is managed by puppet\n# Changes will be lost\n",
+                content => template($header_template),
             }
         } else {
             file { '/etc/shorewall6/tunnels':
@@ -310,7 +319,7 @@ class shorewall (
         concat::fragment { 'routestopped6-preamble':
             order   => '00',
             target  => '/etc/shorewall6/routestopped',
-            content => "# This file is managed by puppet\n# Changes will be lost\n",
+            content => template($header_template),
         }
 
         service { 'shorewall6':
