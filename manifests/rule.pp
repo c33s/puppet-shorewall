@@ -2,10 +2,12 @@
 
 define shorewall::rule (
     $application   = '',
-    $proto         = '',
+    $proto         = 'tcp',
     $port          = '',
     $sport         = '',
     $original_dest = '',
+    $rate          = '',
+    $comment       = '',
     $source,
     $dest,
     $action,
