@@ -10,7 +10,8 @@ define shorewall::blacklist (
     $port          = [],
     $order         = '50',
 ) {
-    validate_re($proto, '^([0-9]+|tcp|udp|-)$')
+    # validate_re($proto, '^([0-9]+|tcp|udp|-)$')
+    # removed because proto could be empty
 
     if $type != 'ipv6' and $::shorewall::ipv4 {
         if versioncmp($::shorewall_version, '4.4.25') < 0 {
