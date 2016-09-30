@@ -14,7 +14,14 @@ class shorewall (
     $route_filter        = true,
     $default_zone_entry  = "local firewall\n",
     $header_template     = "shorewall/header.erb",
-    $blacklist           = ["NEW","INVALID","UNTRACKED"]
+    $blacklist           = ["NEW","INVALID","UNTRACKED"],
+
+    $params = {},
+    $zones = {},
+    $interfaces = {},
+    $rules = {},
+    $policies = {},
+    $blacklists = {},
 ) {
 
     File {
@@ -347,5 +354,36 @@ class shorewall (
     shorewall::config {"ROUTE_FILTER":
         value => $route_filter ? { true => "Yes", false => "No" },
         ipv6 => false,
+    }
+
+    $params.each |String $param, Hash $parameters | {
+        shorewall::param { $param:
+            * => $parameters
+        }
+    }
+    $zones.each |String $zone, Hash $parameters | {
+        shorewall::zone { $zone:
+            * => $parameters
+        }
+    }
+    $interfaces.each |String $interface, Hash $parameters | {
+        shorewall::iface { $interface:
+            * => $parameters
+        }
+    }
+    $rules.each |String $rule, Hash $parameters | {
+        shorewall::rule { $rule:
+            * => $parameters
+        }
+    }
+    $policies.each |String $policy, Hash $parameters | {
+        shorewall::policy { $policy:
+            * => $parameters
+        }
+    }
+    $blacklists.each |String $blacklist, Hash $parameters | {
+        shorewall::blacklist { $blacklist:
+            * => $parameters
+        }
     }
 }
