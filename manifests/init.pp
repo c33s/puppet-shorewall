@@ -22,6 +22,7 @@ class shorewall (
     $rules = {},
     $policies = {},
     $blacklists = {},
+    $configs = {},
 ) {
 
     File {
@@ -356,6 +357,11 @@ class shorewall (
         ipv6 => false,
     }
 
+    $configs.each |String $param, Hash $parameters | {
+        shorewall::config { $param:
+            * => $parameters
+        }
+    }
     $params.each |String $param, Hash $parameters | {
         shorewall::param { $param:
             * => $parameters
