@@ -19,6 +19,10 @@ define shorewall::param (
     }
 
     if $ipv6 {
-        fail("ipv6 not implemented in param")
+        concat::fragment { "param-ipv6-${name}":
+            order   => $order,
+            target  => '/etc/shorewall6/params',
+            content => template('shorewall/params.erb'),
+        }
     }
 }
