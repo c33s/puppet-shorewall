@@ -8,7 +8,7 @@ define shorewall::param (
     $order         = '50',
 ) {
     validate_array($values)
-    validate_re($param, '^[a-zA-Z_]+$')
+    validate_re($param, '^[A-Z]{1}[A-Za-z_0-9]+$')
 
     if $ipv4 {
         concat::fragment { "param-ipv4-${name}":
