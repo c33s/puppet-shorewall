@@ -23,6 +23,7 @@ class shorewall (
     $policies = {},
     $blacklists = {},
     $configs = {},
+    $snats = {},
 ) {
 
     File {
@@ -409,6 +410,12 @@ class shorewall (
     }
     $blacklists.each |String $blacklist, Hash $parameters | {
         shorewall::blacklist { $blacklist:
+            * => $parameters
+        }
+    }
+
+    $snats.each |String $snat, Hash $parameters | {
+        shorewall::snat { $snat:
             * => $parameters
         }
     }
