@@ -58,6 +58,21 @@ class shorewall (
         } else {
             $blacklist_filename = 'blrules'
         }
+        if versioncmp($::shorewall_version, '4.6.0') < 0 {
+            $tcrules_filename = 'tcrules'
+        } else {
+            $tcrules_filename = 'mangle'
+        }
+        if versioncmp($::shorewall_version, '5.0.14') < 0 {
+            $masq_filename = 'masq'
+        } else {
+            $masq_filename = 'snat'
+        }
+        if versioncmp($::shorewall_version, '5.0.14') < 0 {
+            $routestopped_filename = 'routestopped'
+        } else {
+            $routestopped_filename = 'stoppedrules'
+        }
 
         concat { [
                 '/etc/shorewall/zones',
@@ -65,11 +80,11 @@ class shorewall (
                 '/etc/shorewall/policy',
                 '/etc/shorewall/rules',
                 "/etc/shorewall/${blacklist_filename}",
-                '/etc/shorewall/masq',
+                "/etc/shorewall/${masq_filename}",
                 '/etc/shorewall/proxyarp',
                 '/etc/shorewall/hosts',
-                '/etc/shorewall/tcrules',
-                '/etc/shorewall/routestopped',
+                "/etc/shorewall/${tcrules_filename}",
+                "/etc/shorewall/${routestopped_filename}",
                 '/etc/shorewall/params',
             ]:
             mode   => '0644',
@@ -153,7 +168,7 @@ class shorewall (
         # ipv4 masquerading
         concat::fragment { 'masq-preamble':
             order   => '00',
-            target  => '/etc/shorewall/masq',
+            target  => "/etc/shorewall/${masq_filename}",
             content => template($header_template),
         }
 
@@ -167,14 +182,14 @@ class shorewall (
         # ipv4 tc rules
         concat::fragment { 'tcrules-preamble':
             order   => '00',
-            target  => '/etc/shorewall/tcrules',
+            target  => "/etc/shorewall/${tcrules_filename}",
             content => template($header_template),
         }
 
         # ipv4 routestopped
         concat::fragment { 'routestopped-preamble':
             order   => '00',
-            target  => '/etc/shorewall/routestopped',
+            target  => "/etc/shorewall/${routestopped_filename}",
             content => template($header_template),
         }
 
@@ -243,6 +258,11 @@ class shorewall (
         } else {
             $blacklist6_filename = 'blrules'
         }
+        if versioncmp($::shorewall6_version, '5.0.14') < 0 {
+            $routestopped6_filename = 'routestopped'
+        } else {
+            $routestopped6_filename = 'stoppedrules'
+        }
 
         concat { [
                 '/etc/shorewall6/zones',
@@ -250,7 +270,7 @@ class shorewall (
                 '/etc/shorewall6/policy',
                 '/etc/shorewall6/rules',
                 "/etc/shorewall6/${blacklist6_filename}",
-                '/etc/shorewall6/routestopped',
+                "/etc/shorewall6/${routestopped6_filename}",
             ]:
             mode   => '0644',
             notify => Service['shorewall6'],
