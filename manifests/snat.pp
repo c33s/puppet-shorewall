@@ -11,9 +11,10 @@ define shorewall::snat (
   Optional[String] $origdest = '-',
   Optional[String] $probability = '-',
   Optional[String] $comment = '',
+  Optional[String] $order = '50',
 ) {
     concat::fragment { "snat-${name}":
-      order   => '50',
+      order   => $order,
       target  => "/etc/shorewall/snat",
       content => epp('shorewall/snat.epp', {
         action => $action,
