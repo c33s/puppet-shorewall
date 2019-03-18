@@ -347,7 +347,7 @@ class shorewall (
         # ipv6 routestopped
         concat::fragment { 'routestopped6-preamble':
             order   => '00',
-            target  => '/etc/shorewall6/routestopped',
+            target  => "/etc/shorewall6/${routestopped6_filename}",
             content => template($header_template),
         }
 
